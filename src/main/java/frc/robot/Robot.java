@@ -7,14 +7,14 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 public class Robot extends TimedRobot {
 
-  private VictorSPX leftMotor1 = new VictorSPX(0);
-  private VictorSPX leftMotor2 = new VictorSPX(1);
-  private VictorSPX rightMotor1 = new VictorSPX(2);
-  private VictorSPX rightMotor2 = new VictorSPX(3);
+  private double motorspeed = 1;
 
+  private VictorSPX rightMotor1 = new VictorSPX(2); //sağ
+  //private VictorSPX leftMotor2 = new VictorSPX(1);
+  private VictorSPX leftMotor1 = new VictorSPX(17); //sol
+  //private VictorSPX rightMotor2 = new VictorSPX(3);
+  private Timer m_timer = new Timer();
   private Joystick joy1 = new Joystick(0);
-
-  private double startTime;
 
   @Override
   public void robotInit() {
@@ -22,24 +22,24 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    startTime = Timer.getFPGATimestamp();
+    m_timer.start();
   }
 
   @Override
   public void autonomousPeriodic() {
-    double time = Timer.getFPGATimestamp();
-    System.out.println(time - startTime);
+    double time = m_timer.get();
+    //System.out.println(time - startTime);
 
-    if (time - startTime < 3) {
+    if (time < 3) {
       leftMotor1.set(ControlMode.PercentOutput,0.6);
-      leftMotor2.set(ControlMode.PercentOutput,0.6);
+      //leftMotor2.set(ControlMode.PercentOutput,0.6);
       rightMotor1.set(ControlMode.PercentOutput,-0.6);
-      rightMotor2.set(ControlMode.PercentOutput,-0.6);
+      //rightMotor2.set(ControlMode.PercentOutput,-0.6);
     } else {
       leftMotor1.set(ControlMode.PercentOutput,0);
-      leftMotor2.set(ControlMode.PercentOutput,0);
+      //leftMotor2.set(ControlMode.PercentOutput,0);
       rightMotor1.set(ControlMode.PercentOutput,0);
-      rightMotor2.set(ControlMode.PercentOutput,0);
+      //rightMotor2.set(ControlMode.PercentOutput,0);
     }
   }
 
@@ -49,16 +49,16 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    double speed = -joy1.getRawAxis(1) * 0.6;
-    double turn = joy1.getRawAxis(4) * 0.3;
+    double speed = -joy1.getRawAxis(1) * motorspeed;
+    double turn = -joy1.getRawAxis(4) * 0.3;
 
     double left = speed + turn;
     double right = speed - turn;
 
-    leftMotor1.set(ControlMode.PercentOutput,left);
-    leftMotor2.set(ControlMode.PercentOutput,left);
-    rightMotor1.set(ControlMode.PercentOutput,-right);
-    rightMotor2.set(ControlMode.PercentOutput,-right);
+    leftMotor1.set(ControlMode.PercentOutput,-left);
+    //leftMotor2.set(ControlMode.PercentOutput,left);
+    rightMotor1.set(ControlMode.PercentOutput,right);
+    //rightMotor2.set(ControlMode.PercentOutput,-right);
   }
 
   @Override
